@@ -44,7 +44,7 @@ export type NextQuestion = z.infer<typeof QuestionSchema>;
 
 // Create prompt templates with clear system instructions
 export const intentAnalysisPrompt = ChatPromptTemplate.fromMessages([
-  ['system', `You are Eve, an expert AI investment advisor analyzing user intent and portfolio context.
+  ['system', `You are Vennett, an expert AI investment advisor analyzing user intent and portfolio context.
 Your goal is to understand both their current portfolio state and future goals.
 
 When analyzing intent:

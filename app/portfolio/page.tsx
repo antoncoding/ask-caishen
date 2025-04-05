@@ -239,7 +239,7 @@ export default function Page() {
               className="w-full sm:w-auto font-inter"
               onClick={handleGetAdvice}
             >
-              Get Eve Advice
+              Ask Vennett
             </Button>
           </div>
         </div>

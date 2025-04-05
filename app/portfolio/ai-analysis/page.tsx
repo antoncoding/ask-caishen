@@ -114,7 +114,7 @@ export default function AiAnalysisPage() {
   if (isLoading) {
     return (
       <div className="flex h-[80vh] flex-col items-center justify-center">
-        <h1 className="mb-6 text-3xl text-primary">Eve is Thinking...</h1>
+        <h1 className="mb-6 text-3xl text-primary">Vennett is Thinking...</h1>
         <p className="mb-8 text-xl text-secondary">Analyzing market data and your portfolio</p>
         <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
       </div>
@@ -160,7 +160,7 @@ export default function AiAnalysisPage() {
       </div>
 
       <div className="mt-10 rounded-lg bg-surface p-6">
-        <h2 className="mb-4 text-2xl text-primary">Ask Eve for more advice</h2>
+        <h2 className="mb-4 text-2xl text-primary">Ask Vennett for more advice</h2>
         <div className="mb-4 flex items-center">
           <input 
             type="text" 
@@ -168,7 +168,7 @@ export default function AiAnalysisPage() {
             className="bg-main flex-1 rounded-l-lg border-0 px-4 py-3 text-primary focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <Button variant="cta" className="rounded-l-none">
-            Ask Eve
+            Ask Vennett
           </Button>
         </div>
       </div>

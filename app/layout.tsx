@@ -10,8 +10,8 @@ import Header from '@/components/layout/header/Header';
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',
-  title: 'Eve Finance',
-  description: 'Ask Eve -- What to do with your DeFi portfolio',
+  title: 'Ask Vennett',
+  description: 'Ask Vennett -- What to do with your DeFi portfolio',
   other: {
     boat: '0.17.0',
   },

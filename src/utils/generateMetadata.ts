@@ -14,7 +14,7 @@ export function generateMetadata({
   pathname,
 }: MetadataProps): Metadata {
   // Base URL for production - adjust as needed for your domain
-  const baseUrl = 'https://eve.finance';
+  const baseUrl = 'https://ask-vennett.vercel.app';
   
   // Determine full URL for canonical link and OG image
   const url = `${baseUrl}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
@@ -27,12 +27,12 @@ export function generateMetadata({
     title,
     description,
     metadataBase: new URL(baseUrl),
-    authors: [{ name: 'Eve Finance' }],
+    authors: [{ name: 'Ask Vennett' }],
     openGraph: {
       title,
       description,
       url,
-      siteName: 'Eve Finance',
+      siteName: 'Ask Vennett',
       images: [
         {
           url: imageUrl,
@@ -43,13 +43,6 @@ export function generateMetadata({
       ],
       locale: 'en_US',
       type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [imageUrl],
-      creator: '@EveDeFi',
     },
     icons: {
       icon: '/favicon.ico',

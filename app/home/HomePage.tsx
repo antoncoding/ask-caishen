@@ -12,7 +12,7 @@ export default function HomePage() {
         <section className="flex w-full flex-col items-center justify-center">
           <div className="w-full sm:w-4/5 md:w-3/5 mx-auto">
             <h1 className="mb-4 text-center font-inter text-5xl text-primary md:text-6xl">
-              Ask Eve 
+              Ask Vennett 
             </h1>
             <p className="mb-10 text-center font-inter text-xl text-secondary">
               Figure out what to do with your DeFi portfolio

@@ -42,18 +42,14 @@ export function IconNavLink({
 export function NavbarTitle() {
   return (
     <div className="flex h-8 items-center justify-center gap-2">
-      <div className="flex">
-        <BsCircle className="h-5 w-5 text-blue-500" />
-        <BsCircle className="h-5 w-5 -ml-2 text-green-500" />
-        <BsCircle className="h-5 w-5 -ml-2 text-purple-500" />
-      </div>
+      <img src="/logo.png" alt="Vennett" className="h-6 w-6" />
       <Link
         href="/"
         passHref
         className="text-center font-zen text-lg font-medium text-primary no-underline"
-        aria-label="Eve homepage"
+        aria-label="Vennett homepage"
       >
-        Eve
+        Vennett
       </Link>
     </div>
   );

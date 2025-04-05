@@ -1,7 +1,7 @@
 <div align="center">
-  <h1 > Eve </h1>
+  <h1 > Ask Vennett </h1>
   <img height=80 src="./imgs/logo.png"/>
-  <h5 align="center"> Ask Eve what to invest in DeFi.</h5>
+  <h5 align="center"> Ask Vennett what to invest in DeFi.</h5>
 
   <br/>
   <br/>
@@ -9,7 +9,7 @@
 
 ## Overview
 
-Eve is an AI-powered DeFi investment advisor that analyzes your on-chain activity and portfolio to provide personalized investment recommendations. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
+Vennett is the DeFi version of Vennett Burry, an AI investment advisor that analyzes your on-chain activity and portfolio to provide investment recommendations for purplse of experiments. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
 
 ## Core Features
 

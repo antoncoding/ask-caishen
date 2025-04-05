@@ -175,13 +175,13 @@ export default function AgentInterface() {
   };
 
   return (
-    <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-background to-background/80">
+    <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-background to-background/80 dark:from-background dark:to-background/90">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-inter text-foreground mb-8">Talk to Eve</h1>
+        <h1 className="text-3xl font-inter text-foreground mb-8">Talk to Vennett</h1>
         
         {/* Error Display */}
         {error && (
-          <Card className="border-destructive/50">
+          <Card className="border-destructive/50 bg-background/50 dark:bg-background/20">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 text-destructive">
                 <AlertCircle className="w-5 h-5" />
@@ -196,20 +196,20 @@ export default function AgentInterface() {
           <div className="space-y-6">
             {/* AI Response */}
             {currentAnalysis.progress.conversation && (
-              <Card className="border-none bg-card/40 backdrop-blur-sm">
+              <Card className="border-none bg-card/40 dark:bg-card/20 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-primary/10 rounded-full mt-1">
+                    <div className="p-2 bg-primary/10 dark:bg-primary/5 rounded-full mt-1">
                       <BrainIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div className="space-y-1 flex-grow">
-                      <p className="text-sm text-foreground font-inter leading-relaxed">
+                      <p className="text-sm text-foreground dark:text-foreground/90 font-inter leading-relaxed">
                         {currentAnalysis.progress.conversation.reasoning}
                       </p>
                       <div className="flex gap-2 flex-wrap mt-2">
                         {currentAnalysis.progress.conversation.context_awareness.map((context, idx) => (
                           <span key={idx} 
-                                className="text-xs bg-gray-500 px-2 py-1 rounded-full">
+                                className="text-xs bg-muted/50 dark:bg-muted/20 text-muted-foreground px-2 py-1 rounded-full">
                             {context}
                           </span>
                         ))}
@@ -222,7 +222,7 @@ export default function AgentInterface() {
 
             {/* Current Question - Only show if no instrument is selected */}
             {!selectedInstrument && currentAnalysis.progress.next_question && (
-              <Card className="border-none bg-card">
+              <Card className="border-none bg-card dark:bg-card/80">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-inter mb-4 text-foreground p-2">
                     {currentAnalysis.progress.next_question.text}
@@ -233,15 +233,15 @@ export default function AgentInterface() {
                         key={option.id}
                         onClick={() => handleOptionSelect(option.id, option.text)}
                         className="w-full p-8 h-auto flex flex-col items-start gap-2 
-                                 bg-card/40 hover:bg-card/60
+                                 bg-card/40 dark:bg-card/20 hover:bg-card/60 dark:hover:bg-card/40
                                  backdrop-blur-sm transition-all duration-200
-                                 border border-border"
+                                 border border-border dark:border-border/50"
                       >
-                        <span className="text-base font-inter text-foreground p-4 pb-2">
+                        <span className="text-base font-inter text-foreground dark:text-foreground/90 p-4 pb-2">
                           {option.text}
                         </span>
                         {option.description && (
-                          <span className="text-sm text-muted-foreground font-inter">
+                          <span className="text-sm text-muted-foreground dark:text-muted-foreground/80 font-inter">
                             {option.description}
                           </span>
                         )}
@@ -252,11 +252,11 @@ export default function AgentInterface() {
               </Card>
             )}
 
-            {/* Investment Opportunities - Make them clickable */}
+            {/* Investment Opportunities */}
             {currentAnalysis.portfolio.opportunities.length > 0 && (
-              <Card className="border-none bg-card">
+              <Card className="border-none bg-card dark:bg-card/80">
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-inter mb-4 text-foreground flex items-center gap-2">
+                  <h2 className="text-xl font-inter mb-4 text-foreground dark:text-foreground/90 flex items-center gap-2">
                     <ArrowUpRight className="w-5 h-5 text-primary" />
                     Suggested Instruments
                   </h2>
@@ -267,34 +267,34 @@ export default function AgentInterface() {
                         onClick={() => handleInstrumentSelect(opportunity.instrument_type)}
                         className="w-full text-left hover:scale-[1.02] transition-transform duration-200"
                       >
-                        <div className="bg-card/40 backdrop-blur-sm rounded-xl p-4 
-                                    border border-border shadow-sm">
+                        <div className="bg-card/40 dark:bg-card/20 backdrop-blur-sm rounded-xl p-4 
+                                    border border-border dark:border-border/50 shadow-sm dark:shadow-none">
                           <div className="flex items-start gap-4">
-                            <div className="p-2 bg-primary/5 rounded-lg">
+                            <div className="p-2 bg-primary/5 dark:bg-primary/10 rounded-lg">
                               {getInstrumentIcon(opportunity.instrument_type)}
                             </div>
                             <div className="flex-grow">
                               <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-inter text-foreground">
+                                <h3 className="text-lg font-inter text-foreground dark:text-foreground/90">
                                   {opportunity.instrument_type.replace(/_/g, ' ')}
                                 </h3>
                                 <div className="text-right">
-                                  <p className="text-lg font-inter text-primary">
+                                  <p className="text-lg font-inter text-primary dark:text-primary/90">
                                     {opportunity.estimated_apy.toFixed(2)}% APY
                                   </p>
-                                  <p className="text-sm text-muted-foreground">
+                                  <p className="text-sm text-muted-foreground dark:text-muted-foreground/80">
                                     {opportunity.time_preference.replace(/_/g, ' ').toLowerCase()}
                                   </p>
                                 </div>
                               </div>
-                              <p className="text-sm text-muted-foreground mt-1">
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground/80 mt-1">
                                 {opportunity.reason}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                <span className="text-xs bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary/90 px-2 py-1 rounded-full">
                                   {opportunity.risk_level}
                                 </span>
-                                <span className="text-xs bg-muted/30 text-muted-foreground px-2 py-1 rounded-full">
+                                <span className="text-xs bg-muted/30 dark:bg-muted/20 text-muted-foreground dark:text-muted-foreground/80 px-2 py-1 rounded-full">
                                   {opportunity.time_preference}
                                 </span>
                               </div>
@@ -309,28 +309,28 @@ export default function AgentInterface() {
             )}
 
             {/* Analysis Metrics */}
-            <Card className="border-none bg-card">
+            <Card className="border-none bg-card dark:bg-card/80">
               <CardContent className="p-6 space-y-6">
                 {/* Current Portfolio */}
                 {currentAnalysis.portfolio.current_instruments.length > 0 && (
                   <div className="space-y-2">
-                    <h2 className="text-xl font-inter text-foreground flex items-center gap-2">
+                    <h2 className="text-xl font-inter text-foreground dark:text-foreground/90 flex items-center gap-2">
                       <Wallet className="w-5 h-5 text-primary" />
                       Current Portfolio
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                       {currentAnalysis.portfolio.current_instruments.map((instrument, idx) => (
                         <div key={idx} 
-                             className="bg-card/40 backdrop-blur-sm rounded-lg p-3 
-                                      border border-border shadow-sm">
+                             className="bg-card/40 dark:bg-card/20 backdrop-blur-sm rounded-lg p-3 
+                                      border border-border dark:border-border/50 shadow-sm dark:shadow-none">
                           <div className="flex items-center gap-2">
                             {getInstrumentIcon(instrument.type)}
                             <div>
-                              <h3 className="text-sm font-inter text-foreground">
+                              <h3 className="text-sm font-inter text-foreground dark:text-foreground/90">
                                 {instrument.type.replace(/_/g, ' ')}
                               </h3>
                               {instrument.apy && (
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs text-muted-foreground dark:text-muted-foreground/80">
                                   APY: {instrument.apy.toFixed(2)}%
                                 </p>
                               )}
@@ -344,18 +344,18 @@ export default function AgentInterface() {
 
                 {/* Risk Metrics */}
                 <div className="space-y-2">
-                  <h2 className="text-xl font-inter text-foreground flex items-center gap-2">
+                  <h2 className="text-xl font-inter text-foreground dark:text-foreground/90 flex items-center gap-2">
                     <Shield className="w-5 h-5 text-warning" />
                     Risk Analysis
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {Object.entries(currentAnalysis.portfolio.risk_metrics).map(([key, value]) => (
                       <div key={key} 
-                           className="bg-card/40 backdrop-blur-sm rounded-lg p-3 
-                                    border border-border shadow-sm">
+                           className="bg-card/40 dark:bg-card/20 backdrop-blur-sm rounded-lg p-3 
+                                    border border-border dark:border-border/50 shadow-sm dark:shadow-none">
                         <div className="flex items-center gap-2 mb-2">
                           {getInstrumentIcon(key)}
-                          <h3 className="text-sm font-inter capitalize text-muted-foreground">
+                          <h3 className="text-sm font-inter capitalize text-muted-foreground dark:text-muted-foreground/80">
                             {key.replace(/_/g, ' ')}
                           </h3>
                         </div>
@@ -366,7 +366,7 @@ export default function AgentInterface() {
                             className="h-1.5 flex-grow"
                             showValueLabel={false}
                           />
-                          <span className="text-xs font-medium text-foreground w-8 text-right">
+                          <span className="text-xs font-medium text-foreground dark:text-foreground/90 w-8 text-right">
                             {Math.round(value * 100)}%
                           </span>
                         </div>
@@ -381,12 +381,12 @@ export default function AgentInterface() {
 
         {/* Loading Overlay */}
         {isLoading && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm 
+          <div className="fixed inset-0 bg-background/80 dark:bg-background/90 backdrop-blur-sm 
                         flex items-center justify-center z-50">
-            <Card className="border-none bg-card/40">
+            <Card className="border-none bg-card/40 dark:bg-card/20">
               <CardContent className="p-8 flex flex-col items-center space-y-4">
-                <h3 className="text-lg font-inter text-foreground">
-                  Eve is thinking...
+                <h3 className="text-lg font-inter text-foreground dark:text-foreground/90">
+                Vennett is thinking...
                 </h3>
                 <SquareLoader color="currentColor" size={30} />
               </CardContent>

@@ -35,7 +35,7 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-medium text-primary">Enable Advanced Analysis</h3>
                   <p className="text-sm text-secondary">
-                    Allow Eve to perform detailed analysis of your portfolio and on-chain activity to provide better recommendations.
+                    Allow Vennett to perform detailed analysis of your portfolio and on-chain activity to provide better recommendations.
                   </p>
                   <p className="mt-2 text-xs text-secondary opacity-80">
                     This includes historical performance, risk patterns, and cross-protocol exposure analysis.
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-1">
                   <h3 className="text-lg font-medium text-primary">Include Experimental Protocols</h3>
                   <p className="text-sm text-secondary">
-                    Allow Eve to recommend investment opportunities in newer, experimental DeFi protocols.
+                    Allow Vennett to recommend investment opportunities in newer, experimental DeFi protocols.
                   </p>
                   <p className="mt-2 text-xs text-secondary opacity-80">
                     Warning: Experimental protocols typically carry higher risk but may offer higher returns.
