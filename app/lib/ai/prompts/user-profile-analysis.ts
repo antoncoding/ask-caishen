@@ -1,16 +1,66 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-// Define the schema for the next question
-export const QuestionSchema = z.object({
-  id: z.string(),
-  text: z.string(),
-  type: z.enum(['multiple_choice', 'single_choice', 'boolean']),
-  options: z.array(z.object({
-    id: z.string(),
-    text: z.string(),
-    description: z.string().optional()
-  })).optional()
+// Define instrument types
+export const InstrumentType = z.enum([
+  // Liquidity Provision
+  'AMM_LP',           // Automated Market Maker Liquidity Provision
+  'STABLE_LP',        // Stablecoin LP (e.g. Curve)
+  'VOLATILE_LP',      // Volatile Asset LP
+  
+  // Lending & Borrowing
+  'STABLE_LENDING',   // Stablecoin Lending
+  'LST_LENDING',      // Liquid Staking Token Lending
+  'ISOLATED_LENDING', // Isolated Lending Markets
+  'BORROWING',        // Borrowing Positions
+  
+  // Staking & Yield
+  'ETH_STAKING',      // ETH Staking and Liquid Staking
+  'RESTACKING',      // Liquid Staking Token Staking
+  
+  // Fixed Rate & Time Products
+  'PENDLE_PT',        // Pendle Principal Token
+  'PENDLE_YT',        // Pendle Yield Token
+  'PENDLE_LP',        // Pendle LP
+  
+  // Options & Structured Products
+  'LONG_CALL_OPTION', // Long Call Options
+  'LONG_PUT_OPTION',  // Long Put Options
+  'COVERED_CALL',     // Covered Call Writing
+  'SHORT_PUT',        // Cash Secured Put
+]);
+
+// Define time preference types
+export const TimePreference = z.enum([
+  'FIXED_TERM',      // Fixed duration investments (e.g., Pendle PT/YT)
+  'FLEXIBLE',        // No time lock (e.g., AMM LP)
+  'ROLLING_SHORT',   // Short-term rolling positions (e.g., options)
+  'ROLLING_LONG'     // Long-term rolling positions (e.g., staking)
+]);
+
+// Define risk appetite for different aspects
+export const RiskAppetite = z.enum([
+  'CONSERVATIVE',    // Established, audited protocols, lower yields
+  'MODERATE',        // Mix of established and newer protocols
+  'AGGRESSIVE'       // New protocols, higher yields, higher risk
+]);
+
+// Define the schema for investment preferences
+export const InvestmentPreferencesSchema = z.object({
+  acceptable_instruments: z.array(InstrumentType),
+  time_preference: TimePreference,
+  risk_appetite: RiskAppetite,
+  trusted_assets: z.array(z.string()),
+  yield_expectations: z.object({
+    minimum_acceptable: z.number(),
+    target: z.number(),
+    maximum_risk_adjusted: z.number()
+  }),
+  trust_preferences: z.object({
+    trust_risk_curators: z.boolean(),
+    trusted_curators: z.array(z.string()).optional(),
+    preferred_auditors: z.array(z.string()).optional()
+  })
 });
 
 // Define the analysis progress schema
@@ -19,119 +69,82 @@ export const AnalysisProgressSchema = z.object({
   missing_information: z.array(z.string()),
   confidence_levels: z.record(z.number()),
   is_analysis_complete: z.boolean(),
-  next_question: QuestionSchema.optional()
+  conversation: z.object({
+    response: z.string(),  // The AI's response to the user's last input
+    personality_traits: z.array(z.string()), // e.g. ["encouraging", "analytical"]
+    context_awareness: z.array(z.string()), // e.g. ["noticed risk aversion", "spotted yield opportunity"]
+  }),
+  next_question: z.object({
+    id: z.string(),
+    text: z.string(),
+    type: z.enum(['single_choice', 'multiple_choice']),
+    options: z.array(z.object({
+      id: z.string(),
+      text: z.string(),
+      description: z.string().optional()
+    }))
+  }).optional()
 });
 
-// Define the schema for risk tolerance analysis
-export const RiskProfileSchema = z.object({
-  defi_expertise: z.object({
-    level: z.enum(['beginner', 'intermediate', 'advanced', 'expert']),
-    understanding: z.string(),
-    key_experiences: z.array(z.string())
-  }).optional(),
-  risk_tolerance: z.object({
-    token_risk: z.object({
-      level: z.enum(['conservative', 'moderate', 'aggressive']),
-      preferences: z.string(),
-      acceptable_tokens: z.array(z.string())
-    }).optional(),
-    protocol_risk: z.object({
-      level: z.enum(['conservative', 'moderate', 'aggressive']),
-      preferences: z.string(),
-      protocol_preferences: z.array(z.string())
-    }).optional(),
-    overall_assessment: z.string().optional()
-  }).optional(),
-  portfolio_analysis: z.object({
-    current_exposure: z.string(),
-    diversification: z.string(),
-    risk_concentration: z.string()
-  }).optional(),
-  derivatives_profile: z.object({
-    experience_level: z.enum(['none', 'basic', 'intermediate', 'advanced']),
-    usage_patterns: z.string(),
-    hedging_preferences: z.string(),
-    acceptable_instruments: z.array(z.string())
-  }).optional()
+// Define the portfolio analysis schema
+export const PortfolioAnalysisSchema = z.object({
+  current_instruments: z.array(z.object({
+    type: InstrumentType,
+    amount: z.number(),
+    apy: z.number().optional(),
+    time_horizon: TimePreference.optional()
+  })),
+  risk_metrics: z.object({
+    concentration_risk: z.number(),
+    impermanent_loss_risk: z.number().optional(),
+    smart_contract_risk: z.number(),
+    market_risk: z.number()
+  }),
+  opportunities: z.array(z.object({
+    instrument_type: InstrumentType,
+    estimated_apy: z.number(),
+    risk_level: RiskAppetite,
+    time_preference: TimePreference,
+    reason: z.string()
+  }))
 });
 
 // Combined response type for each analysis step
 export const AnalysisResponseSchema = z.object({
-  profile: RiskProfileSchema,
+  preferences: InvestmentPreferencesSchema,
+  portfolio: PortfolioAnalysisSchema,
   progress: AnalysisProgressSchema
 });
 
-export type UserRiskProfile = z.infer<typeof RiskProfileSchema>;
+export type InvestmentPreferences = z.infer<typeof InvestmentPreferencesSchema>;
+export type PortfolioAnalysis = z.infer<typeof PortfolioAnalysisSchema>;
 export type AnalysisProgress = z.infer<typeof AnalysisProgressSchema>;
 export type AnalysisResponse = z.infer<typeof AnalysisResponseSchema>;
 
-// Initial questions for each topic
-export const INITIAL_QUESTIONS = {
-  defi_expertise: {
-    id: 'initial_defi_experience',
-    text: 'How would you describe your experience with DeFi?',
-    type: 'single_choice' as const,
-    options: [
-      { id: 'beginner', text: 'Beginner - Just starting out with DeFi', description: 'Basic understanding of wallets and simple swaps' },
-      { id: 'intermediate', text: 'Intermediate - Comfortable with common protocols', description: 'Experience with lending and basic yield farming' },
-      { id: 'advanced', text: 'Advanced - Deep DeFi experience', description: 'Comfortable with complex strategies and multiple protocols' },
-      { id: 'expert', text: 'Expert - Professional DeFi user', description: 'Deep understanding of DeFi mechanics and risk management' }
-    ]
-  },
-  risk_tolerance: {
-    id: 'initial_risk_preference',
-    text: 'What best describes your approach to DeFi risks?',
-    type: 'single_choice' as const,
-    options: [
-      { id: 'conservative', text: 'Conservative - Prefer established protocols', description: 'Focus on safety and proven track record' },
-      { id: 'moderate', text: 'Moderate - Balance of risk and reward', description: 'Open to newer protocols with good security' },
-      { id: 'aggressive', text: 'Aggressive - Comfortable with high risk', description: 'Willing to try new protocols for higher yields' },
-      { id: 'unknown', text: 'I\'m not sure yet', description: 'Need more information to decide' }
-    ]
-  }
-};
-
 export const userProfilePrompt = ChatPromptTemplate.fromMessages([
-  ['system', `You are an expert DeFi advisor conducting a step-by-step analysis of a user's DeFi profile and risk tolerance.
+  ['system', `You are an expert DeFi investment advisor analyzing user portfolios and suggesting optimal investment strategies.
+You have a friendly and engaging personality, and you provide personalized insights in a conversational manner.
 
-Your goal is to gather information systematically about the user's DeFi engagement. Focus on one aspect at a time:
+Your responses should be:
+- Personal and engaging
+- Contextually aware of previous choices
+- Encouraging and supportive
+- Focused on education and guidance
+- Clear about reasoning and suggestions
 
-1. DeFi Expertise Assessment:
-   - Understanding of DeFi concepts
-   - Experience with different protocols
-   - Technical knowledge
+Example responses:
+- "I see you're interested in ETH staking - that's a great foundation! Based on your risk comfort level, we could explore some interesting ways to boost those yields while keeping things secure..."
+- "Ah, looking for higher yields? I like your ambition! Let's look at some proven strategies that can help you reach that goal while staying within your risk comfort zone..."
+- "Smart choice focusing on stablecoin strategies. I notice you're comfortable with moderate risk - have you considered combining this with some LST lending? It could significantly boost your yields..."
 
-2. Risk Tolerance Analysis:
-   - Token Risk: Comfort with different token types
-   - Protocol Risk: Willingness to use new protocols
-   - Overall Risk Profile
+When making suggestions:
+- Always explain the reasoning
+- Connect it to user's previous choices
+- Highlight both benefits and risks
+- Show enthusiasm for good fits
+- Be honest about trade-offs
 
-3. Portfolio Analysis:
-   - Current positions and exposure
-   - Diversification and concentration
-   - Vulnerabilities
-
-4. Derivatives Usage:
-   - Experience with perpetuals/options
-   - Hedging strategies
-   - Comfort with instruments
-
-For each interaction:
-1. Analyze the current conversation and portfolio context
-2. Determine which aspects still need information
-3. Generate a specific, focused question to gather missing information
-4. Update the profile with any new information learned
-5. Track progress and confidence in each area
-
-Return:
-1. The current profile (partial or complete)
-2. Progress tracking (completed topics, missing info, confidence levels)
-3. Next question (if analysis is not complete)
-
-Make questions simple and focused. Use multiple choice, single choice, or boolean questions that are easy to answer.
-Avoid open-ended questions. Each question should target a specific aspect of the profile.
-
-IMPORTANT: Log all key decisions and reasoning in your response for debugging.`],
+Keep the conversation flowing naturally while gathering the necessary information to make informed suggestions.`],
   ['user', `Portfolio Context:
 {portfolio_context}
 
