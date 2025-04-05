@@ -1,7 +1,7 @@
 <div align="center">
   <h1 > Ask Vennett </h1>
-  <img height=80 src="./imgs/logo.png"/>
-  <h5 align="center"> Ask Vennett what to invest in DeFi.</h5>
+  <img height=140 src="./imgs/logo.png"/>
+  <h5 align="center"> Ask Vennett what to do in DeFi.</h5>
 
   <br/>
   <br/>

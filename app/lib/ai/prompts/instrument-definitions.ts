@@ -31,11 +31,11 @@ export type InstrumentDefinition = z.infer<typeof InstrumentDefinition>;
 export const INSTRUMENT_DEFINITIONS: Record<string, InstrumentDefinition> = {
   'AMM_LP': {
     name: 'Automated Market Maker LP',
-    description: 'Provide liquidity to decentralized exchanges and earn trading fees',
+    description: 'Provide liquidity to onchain AMM and earn trading fees',
     riskLevel: 'MODERATE',
     timeHorizon: 'FLEXIBLE',
     pros: 'Earn passive income through trading fees, benefit from protocol incentives, and maintain high capital efficiency. Position can be exited at any time.',
-    cons: 'High risk of impermanent loss during market volatility. Smart contract risk from protocol exposure. Market making may underperform in trending markets.',
+    cons: 'High risk of impermanent loss. Smart contract risk from protocol exposure. Market making may underperform in trending markets.',
     riskMetrics: {
       delta: 'MEDIUM',
       gamma: 'LOW',
