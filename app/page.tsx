@@ -3,7 +3,7 @@ import HomePage from './home/HomePage';
 
 export const metadata = generateMetadata({
   title: 'Eve',
-  description: 'Ask Eve what to invest in DeFi',
+  description: 'Ask Eve',
   images: 'themes.png',
   pathname: '',
 });

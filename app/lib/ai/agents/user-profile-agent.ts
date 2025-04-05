@@ -40,18 +40,42 @@ const agent = createReactAgent({
   llm,
   tools: [analyzeProfileTool],
   responseFormat: {
-    prompt: `You are an expert DeFi advisor conducting a step-by-step analysis of a user's DeFi profile and risk tolerance.
+    prompt: `You are an expert DeFi advisor helping users find the optimal investment instruments for their goals.
     
-Your goal is to gather information systematically about the user's DeFi engagement, focusing on:
-1. DeFi Expertise Assessment
-2. Risk Tolerance
-3. Portfolio Analysis
-4. Derivatives Usage
+You must follow this exact conversation sequence:
+1. First Question (Already Asked): Understand if they want to increase yield or reduce risk
+2. Second Question: Ask about their time preference
+   - For yield-focused: "How long can you commit your capital?"
+   - For risk-focused: "What's your preferred investment duration?"
+   Options should be:
+   - "Short Term (1-3 months)"
+   - "Medium Term (3-12 months)"
+   - "Long Term (1+ years)"
 
-Make questions simple and focused. Use multiple choice or single choice questions that are easy to answer.
-Avoid open-ended questions. Each question should target a specific aspect of the profile.
+3. Third Question: Ask about risk tolerance
+   - For yield-focused: "What's your acceptable risk level for higher yields?"
+   - For risk-focused: "How conservative should we be with your portfolio?"
+   Options should be:
+   - "Conservative (Established protocols, lower yields)"
+   - "Moderate (Mix of established and newer protocols)"
+   - "Aggressive (Newer protocols, higher yields)"
 
-The response must follow the exact schema structure with all required fields.`,
+4. Final Question: Ask about target returns
+   - For yield-focused: "What's your target annual yield?"
+   - For risk-focused: "What's your minimum acceptable yield?"
+   Options should be:
+   - "3-5% (Very stable)"
+   - "5-10% (Balanced)"
+   - "10%+ (Growth focused)"
+
+Only after collecting ALL this information:
+- Analyze their preferences
+- Match with suitable instruments
+- Provide detailed recommendations
+- Include specific risk metrics
+
+The response must follow the exact schema structure with all required fields.
+Do not skip questions or provide final recommendations until all questions are answered.`,
     schema: AnalysisResponseSchema
   }
 });
@@ -68,16 +92,36 @@ export async function analyzeUserProfile(
       .map(msg => `${msg.role}: ${msg.content}`)
       .join('\n');
 
+    // Track conversation progress
+    const questionSequence = ['investment_goal', 'time_preference', 'risk_tolerance', 'target_returns'];
+    const currentProgress = messages.length / 2; // Each Q&A is 2 messages
+
     const response = await agent.invoke({
       messages: [
         {
           role: "user",
-          content: `Analyze this DeFi profile:\n\nPortfolio Context: ${portfolioContext}\n\nConversation History: ${conversationHistory}\n\nCurrent Question: ${currentQuestion || ''}\n\nSelected Option: ${selectedOption || ''}`
+          content: `Analyze this DeFi profile:
+Portfolio Context: ${portfolioContext}
+
+Conversation History: ${conversationHistory}
+
+Current Question: ${currentQuestion || ''}
+Selected Option: ${selectedOption || ''}
+
+Current Progress: ${currentProgress} out of 4 questions
+Questions Remaining: ${Math.max(0, 4 - currentProgress)}
+Next Topic: ${questionSequence[currentProgress] || 'final_recommendations'}`
         }
       ]
     });
 
-    return response.structuredResponse as AnalysisResponse;
+    // Ensure we don't complete analysis too early
+    const analysisResponse = response.structuredResponse as AnalysisResponse;
+    if (currentProgress < 4) {
+      analysisResponse.progress.is_analysis_complete = false;
+    }
+
+    return analysisResponse;
   } catch (error) {
     console.error('Error in user profile analysis:', error);
     throw error;

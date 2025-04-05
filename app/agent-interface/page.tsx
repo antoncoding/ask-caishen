@@ -22,19 +22,19 @@ interface Message {
 // Initial options for starting the conversation
 const INITIAL_QUESTION = {
   id: 'investment_goal',
-  text: "What's your primary investment goal for your DeFi portfolio?",
+  text: "What's your primary goal for your portfolio?",
   type: 'single_choice' as const,
   options: [
     {
-      id: 'YIELD_OPTIMIZATION',
-      text: 'Optimize Yield',
-      description: 'Find better yield opportunities while maintaining your risk profile'
+      id: 'YIELD_FOCUSED',
+      text: 'Increase Yield',
+      description: 'Find opportunities to enhance returns while managing risk'
     },
     {
-      id: 'RISK_REDUCTION',
+      id: 'RISK_FOCUSED',
       text: 'Reduce Risk',
-      description: 'Optimize portfolio for better risk-adjusted returns'
-    },
+      description: 'Optimize for better risk-adjusted returns and portfolio stability'
+    }
   ]
 };
 
@@ -45,6 +45,7 @@ export default function AgentInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentAnalysis, setCurrentAnalysis] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedInstrument, setSelectedInstrument] = useState<string | null>(null);
 
   // Start with initial question when portfolio is loaded
   useEffect(() => {
@@ -88,7 +89,6 @@ export default function AgentInterface() {
           is_analysis_complete: false,
           conversation: {
             response: "Welcome! I'll help you optimize your DeFi portfolio. Let's start by understanding your investment goals.",
-            personality_traits: ["welcoming", "professional"],
             context_awareness: ["new analysis session", "ready to explore"]
           },
           next_question: INITIAL_QUESTION
@@ -96,6 +96,12 @@ export default function AgentInterface() {
       });
     }
   }, [portfolioSummary]);
+
+  const handleInstrumentSelect = async (instrumentType: string) => {
+    setSelectedInstrument(instrumentType);
+    // Navigate to transaction composition page with the selected instrument
+    router.push(`/compose-transaction?instrument=${instrumentType}`);
+  };
 
   const handleOptionSelect = async (optionId: string, optionText: string) => {
     setIsLoading(true);
@@ -169,7 +175,7 @@ export default function AgentInterface() {
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-background to-background/80">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-inter text-foreground mb-8">DeFi Portfolio Analysis</h1>
+        <h1 className="text-3xl font-inter text-foreground mb-8">Talk to Eve</h1>
         
         {/* Error Display */}
         {error && (
@@ -212,8 +218,8 @@ export default function AgentInterface() {
               </Card>
             )}
 
-            {/* Current Question */}
-            {currentAnalysis.progress.next_question && (
+            {/* Current Question - Only show if no instrument is selected */}
+            {!selectedInstrument && currentAnalysis.progress.next_question && (
               <Card className="border-none bg-card">
                 <CardContent className="p-6">
                   <h2 className="text-xl font-inter mb-4 text-foreground">
@@ -244,51 +250,56 @@ export default function AgentInterface() {
               </Card>
             )}
 
-            {/* Investment Opportunities */}
+            {/* Investment Opportunities - Make them clickable */}
             {currentAnalysis.portfolio.opportunities.length > 0 && (
               <Card className="border-none bg-card">
                 <CardContent className="p-6">
                   <h2 className="text-xl font-inter mb-4 text-foreground flex items-center gap-2">
                     <ArrowUpRight className="w-5 h-5 text-primary" />
-                    Current Suggestions
+                    Suggested Instruments
                   </h2>
                   <div className="space-y-3">
                     {currentAnalysis.portfolio.opportunities.map((opportunity, idx) => (
-                      <div key={idx} 
-                           className="bg-card/40 backdrop-blur-sm rounded-xl p-4 
+                      <button
+                        key={idx}
+                        onClick={() => handleInstrumentSelect(opportunity.instrument_type)}
+                        className="w-full text-left hover:scale-[1.02] transition-transform duration-200"
+                      >
+                        <div className="bg-card/40 backdrop-blur-sm rounded-xl p-4 
                                     border border-border shadow-sm">
-                        <div className="flex items-start gap-4">
-                          <div className="p-2 bg-primary/5 rounded-lg">
-                            {getInstrumentIcon(opportunity.instrument_type)}
-                          </div>
-                          <div className="flex-grow">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-lg font-inter text-foreground">
-                                {opportunity.instrument_type.replace(/_/g, ' ')}
-                              </h3>
-                              <div className="text-right">
-                                <p className="text-lg font-inter text-primary">
-                                  {opportunity.estimated_apy.toFixed(2)}% APY
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {opportunity.time_preference.replace(/_/g, ' ').toLowerCase()}
-                                </p>
-                              </div>
+                          <div className="flex items-start gap-4">
+                            <div className="p-2 bg-primary/5 rounded-lg">
+                              {getInstrumentIcon(opportunity.instrument_type)}
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {opportunity.reason}
-                            </p>
-                            <div className="flex gap-2 mt-2">
-                              <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                                {opportunity.risk_level}
-                              </span>
-                              <span className="text-xs bg-muted/30 text-muted-foreground px-2 py-1 rounded-full">
-                                {opportunity.time_preference}
-                              </span>
+                            <div className="flex-grow">
+                              <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-inter text-foreground">
+                                  {opportunity.instrument_type.replace(/_/g, ' ')}
+                                </h3>
+                                <div className="text-right">
+                                  <p className="text-lg font-inter text-primary">
+                                    {opportunity.estimated_apy.toFixed(2)}% APY
+                                  </p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {opportunity.time_preference.replace(/_/g, ' ').toLowerCase()}
+                                  </p>
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {opportunity.reason}
+                              </p>
+                              <div className="flex gap-2 mt-2">
+                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                  {opportunity.risk_level}
+                                </span>
+                                <span className="text-xs bg-muted/30 text-muted-foreground px-2 py-1 rounded-full">
+                                  {opportunity.time_preference}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </CardContent>

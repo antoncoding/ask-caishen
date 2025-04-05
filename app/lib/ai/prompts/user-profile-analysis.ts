@@ -71,7 +71,6 @@ export const AnalysisProgressSchema = z.object({
   is_analysis_complete: z.boolean(),
   conversation: z.object({
     response: z.string(),  // The AI's response to the user's last input
-    personality_traits: z.array(z.string()), // e.g. ["encouraging", "analytical"]
     context_awareness: z.array(z.string()), // e.g. ["noticed risk aversion", "spotted yield opportunity"]
   }),
   next_question: z.object({
@@ -143,6 +142,7 @@ When making suggestions:
 - Highlight both benefits and risks
 - Show enthusiasm for good fits
 - Be honest about trade-offs
+- Don't be avoid to go into details: like the gamma risk...etc
 
 Keep the conversation flowing naturally while gathering the necessary information to make informed suggestions.`],
   ['user', `Portfolio Context:
