@@ -65,7 +65,7 @@ export function Navbar() {
           label="Home" 
         />
         <IconNavLink 
-          href="/history" 
+          href="/portfolio/history" 
           icon={<RiHistoryLine className="h-6 w-6" />} 
           label="History" 
         />

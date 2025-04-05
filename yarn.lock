@@ -2154,6 +2154,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroicons/react@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@heroicons/react@npm:2.2.0"
+  peerDependencies:
+    react: ">= 16 || ^19.0.0-rc"
+  checksum: 10c0/f8d3cf689b56716339c91df3542f3948115042d1e70e6bc940a3f3e347c0bc78b56aa563917fbd7ce097fe2f38ebb21bffb0db39be914cbc545a754bddae9ab4
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
   resolution: "@humanwhocodes/config-array@npm:0.13.0"
@@ -10910,6 +10919,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: 10c0/b79ff32830e6b7faa009590af6ae0fb8c3fd9ffad46d930548fbb5acf473773b4712ae887e156ba91a7b3dc30591ce0f517d69fd83bd9c38650fdc03b4e0bac8
+  languageName: node
+  linkType: hard
+
 "dateformat@npm:^4.6.3":
   version: 4.6.3
   resolution: "dateformat@npm:4.6.3"
@@ -12281,6 +12297,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@coinbase/wallet-sdk": "npm:^3.9.1"
+    "@heroicons/react": "npm:^2.2.0"
     "@jest/globals": "npm:^29.7.0"
     "@langchain/anthropic": "npm:^0.3.16"
     "@langchain/community": "npm:^0.3.39"
@@ -12327,6 +12344,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
+    date-fns: "npm:^4.1.0"
     downshift: "npm:^9.0.8"
     eslint: "npm:^8.27.0"
     eslint-config-airbnb: "npm:19.0.4"

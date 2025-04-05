@@ -1,11 +1,21 @@
+import { ReactNode } from 'react';
+
 interface CardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
 export function Card({ children, className = '' }: CardProps) {
   return (
-    <div className={`bg-card dark:bg-gray-800/80 rounded-lg shadow-sm dark:shadow-none border border-border/30 dark:border-gray-700/50 ${className}`}>
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-none border border-border/30 dark:border-gray-700/50 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+export function CardHeader({ children, className = '' }: CardProps) {
+  return (
+    <div className={`p-4 ${className}`}>
       {children}
     </div>
   );
