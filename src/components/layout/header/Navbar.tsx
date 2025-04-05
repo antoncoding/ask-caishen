@@ -2,25 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { clsx } from 'clsx';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { FaRegMoon } from 'react-icons/fa';
 import { LuSunMedium } from 'react-icons/lu';
-import { RiHistoryLine } from 'react-icons/ri';
+import { RiHistoryLine, RiHome4Line } from 'react-icons/ri';
 import { BsCircle } from 'react-icons/bs';
 
-export function NavbarLink({
-  children,
+export function IconNavLink({
   href,
   matchKey,
-  target,
+  icon,
+  label,
 }: {
-  children: React.ReactNode;
   href: string;
   matchKey?: string;
-  target?: string;
+  icon: React.ReactNode;
+  label: string;
 }) {
   const pathname = usePathname();
   const isActive = matchKey ? pathname.includes(matchKey) : pathname === href;
@@ -29,21 +28,20 @@ export function NavbarLink({
     <Link
       href={href}
       className={clsx(
-        'px-2 py-1 text-center font-zen text-base font-normal text-primary no-underline',
-        'relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:bg-primary',
-        'no-underline transition-all duration-200',
-        isActive ? 'after:opacity-100' : 'after:opacity-0',
+        'flex flex-col items-center justify-center p-3 my-2 text-primary rounded-full',
+        'transition-all duration-200 hover:bg-surface',
+        isActive ? 'bg-surface' : ''
       )}
-      target={target}
+      aria-label={label}
     >
-      {children}
+      {icon}
     </Link>
   );
 }
 
 export function NavbarTitle() {
   return (
-    <div className="flex h-8 items-center justify-start gap-2">
+    <div className="flex h-8 items-center justify-center gap-2">
       <div className="flex">
         <BsCircle className="h-5 w-5 text-blue-500" />
         <BsCircle className="h-5 w-5 -ml-2 text-green-500" />
@@ -74,25 +72,29 @@ export function Navbar() {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between">
-      <nav className="flex h-full w-full items-center gap-8 px-4">
-        <NavbarTitle />
-
-        <div className="flex items-center gap-4">
-          <NavbarLink href="/">Home</NavbarLink>
-          <NavbarLink href="/history">
-            <div className="flex items-center gap-1">
-              <RiHistoryLine className="h-4 w-4" />
-              History
-            </div>
-          </NavbarLink>
-        </div>
-      </nav>
+    <div className="fixed left-0 top-0 bottom-0 w-16 flex flex-col items-center justify-between py-6 bg-main">
+      {/* Top - Logo */}
+      <NavbarTitle />
       
+      {/* Middle - Navigation */}
+      <div className="flex flex-col items-center">
+        <IconNavLink 
+          href="/" 
+          icon={<RiHome4Line className="h-6 w-6" />} 
+          label="Home" 
+        />
+        <IconNavLink 
+          href="/history" 
+          icon={<RiHistoryLine className="h-6 w-6" />} 
+          label="History" 
+        />
+      </div>
+      
+      {/* Bottom - Theme Toggle */}
       <button
         type="button"
         onClick={toggleTheme}
-        className="fixed bottom-6 left-6 rounded-full bg-surface p-3 shadow-md"
+        className="rounded-full bg-surface p-3"
         aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
       >
         {mounted && (theme === 'dark' ? 

@@ -9,7 +9,7 @@
   --component-highlights-item-width: calc(100vw - 100px);
   --developer-experience-code-window-background: var(--slate-12);
 
-  --palette-orange: #f45f2d;
+  --palette-orange: #8fa6cb;
 
   /* light theme variables */
   --palette-bg-hovered: #f6f8fb;
@@ -31,7 +31,7 @@
   --quick-nav-display: none;
 
   /* Palette - black */
-  --palette-orange: #f45f2d;
+  --palette-orange: #8fa6cb;
   --palette-bg-black: #16181a;
   --palette-bg-black-secondary: #202426;
   --palette-bg-hovered: #313537;

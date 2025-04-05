@@ -27,11 +27,11 @@ function OnchainProviders({ children }: Props) {
         <RainbowKitProvider
           theme={{
             lightMode: lightTheme({
-              accentColor: '#f45f2d',
+              accentColor: '#8fa6cb',
               borderRadius: 'small',
             }),
             darkMode: darkTheme({
-              accentColor: '#f45f2d',
+              accentColor: '#8fa6cb',
               borderRadius: 'small',
             }),
           }}

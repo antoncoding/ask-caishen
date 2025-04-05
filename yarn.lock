@@ -9207,6 +9207,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.8.4":
+  version: 1.8.4
+  resolution: "axios@npm:1.8.4"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10c0/450993c2ba975ffccaf0d480b68839a3b2435a5469a71fa2fb0b8a55cdb2c2ae47e609360b9c1e2b2534b73dfd69e2733a1cf9f8215bee0bcd729b72f801b0ce
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^3.2.1":
   version: 3.2.4
   resolution: "axobject-query@npm:3.2.4"
@@ -11720,6 +11731,7 @@ __metadata:
     "@uniswap/permit2-sdk": "npm:^1.2.1"
     abitype: "npm:^0.10.3"
     autoprefixer: "npm:^10.4.16"
+    axios: "npm:^1.8.4"
     babel-jest: "npm:^29.7.0"
     clsx: "npm:^2.1.0"
     downshift: "npm:^9.0.8"
@@ -11767,7 +11779,7 @@ __metadata:
     react-spinners: "npm:^0.14.1"
     react-table: "npm:^7.8.0"
     react-toastify: "npm:11.0.2"
-    recharts: "npm:^2.13.0"
+    recharts: "npm:^2.15.2"
     rehype-pretty-code: "npm:0.12.3"
     rehype-stringify: "npm:^10.0.0"
     remark-parse: "npm:^11.0.0"
@@ -12102,6 +12114,16 @@ __metadata:
   version: 3.3.3
   resolution: "flatted@npm:3.3.3"
   checksum: 10c0/e957a1c6b0254aa15b8cce8533e24165abd98fadc98575db082b786b5da1b7d72062b81bfdcd1da2f4d46b6ed93bec2434e62333e9b4261d79ef2e75a10dd538
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.9
+  resolution: "follow-redirects@npm:1.15.9"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10c0/5829165bd112c3c0e82be6c15b1a58fa9dcfaede3b3c54697a82fe4a62dd5ae5e8222956b448d2f98e331525f05d00404aba7d696de9e761ef6e42fdc780244f
   languageName: node
   linkType: hard
 
@@ -16297,6 +16319,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-from-env@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "proxy-from-env@npm:1.1.0"
+  checksum: 10c0/fe7dd8b1bdbbbea18d1459107729c3e4a2243ca870d26d34c2c1bcd3e4425b7bcc5112362df2d93cc7fb9746f6142b5e272fd1cc5c86ddf8580175186f6ad42b
+  languageName: node
+  linkType: hard
+
 "psl@npm:^1.1.33":
   version: 1.15.0
   resolution: "psl@npm:1.15.0"
@@ -16687,7 +16716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:^2.13.0":
+"recharts@npm:^2.15.2":
   version: 2.15.2
   resolution: "recharts@npm:2.15.2"
   dependencies:

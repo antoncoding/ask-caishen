@@ -36,7 +36,7 @@ const config: Config = {
         '2mint': '420px 1fr',
       },
       colors: {
-        primary: '#f45f2d',
+        primary: '#8fa6cb',
       },
       fontFamily: {
         inter: ['var(--font-inter)'],
