@@ -12380,7 +12380,7 @@ __metadata:
     typescript: "npm:~5.3.3"
     unified: "npm:^11.0.4"
     viem: "npm:2.x"
-    wagmi: "npm:^2.10.2"
+    wagmi: "npm:^2.14.2"
     workbox-webpack-plugin: "npm:^7.0.0"
     zod: "npm:^3.24.2"
   languageName: unknown
@@ -20105,7 +20105,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wagmi@npm:^2.10.2":
+"wagmi@npm:^2.14.2":
   version: 2.14.16
   resolution: "wagmi@npm:2.14.16"
   dependencies:

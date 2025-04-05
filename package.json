@@ -78,7 +78,7 @@
     "tailwind-merge": "^2.5.5",
     "unified": "^11.0.4",
     "viem": "2.x",
-    "wagmi": "^2.10.2",
+    "wagmi": "^2.14.2",
     "workbox-webpack-plugin": "^7.0.0",
     "zod": "^3.24.2"
   },
