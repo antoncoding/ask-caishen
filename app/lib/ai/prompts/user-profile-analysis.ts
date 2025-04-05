@@ -70,6 +70,7 @@ export const AnalysisProgressSchema = z.object({
   confidence_levels: z.record(z.number()),
   is_analysis_complete: z.boolean(),
   conversation: z.object({
+    reasoning: z.string(), // e.g. "User show strong perference for yield, but only in stable coins (delta neutral)"
     response: z.string(),  // The AI's response to the user's last input
     context_awareness: z.array(z.string()), // e.g. ["noticed risk aversion", "spotted yield opportunity"]
   }),

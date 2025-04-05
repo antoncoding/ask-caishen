@@ -34,7 +34,7 @@ const chainNames: Record<number, string> = {
   8453: 'Base'
 };
 
-export const PortfolioPage = () => {
+export default function Page() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   const [timerange, setTimerange] = React.useState<TimeRange>(TimeRange.Week);
@@ -246,6 +246,4 @@ export const PortfolioPage = () => {
       </MotionWrapper>
     </div>
   );
-}
-
-export default PortfolioPage; 
+} 

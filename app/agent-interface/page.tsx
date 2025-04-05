@@ -11,7 +11,8 @@ import { Progress } from '@nextui-org/react';
 import { 
   TrendingUp, Shield, Wallet, LineChart, Clock, 
   BarChart3, ArrowUpRight, Lock, Unlock, Scale,
-  AlertCircle, CheckCircle2
+  AlertCircle, CheckCircle2,
+  BrainIcon
 } from 'lucide-react';
 
 interface Message {
@@ -88,6 +89,7 @@ export default function AgentInterface() {
           },
           is_analysis_complete: false,
           conversation: {
+            reasoning: "Initial portfolio loaded, let's start by understanding user's investment goals.",
             response: "Welcome! I'll help you optimize your DeFi portfolio. Let's start by understanding your investment goals.",
             context_awareness: ["new analysis session", "ready to explore"]
           },
@@ -198,16 +200,16 @@ export default function AgentInterface() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="p-2 bg-primary/10 rounded-full mt-1">
-                      <TrendingUp className="w-6 h-6 text-primary" />
+                      <BrainIcon className="w-6 h-6 text-primary" />
                     </div>
                     <div className="space-y-1 flex-grow">
-                      <p className="text-lg text-foreground font-inter leading-relaxed">
-                        {currentAnalysis.progress.conversation.response}
+                      <p className="text-sm text-foreground font-inter leading-relaxed">
+                        {currentAnalysis.progress.conversation.reasoning}
                       </p>
                       <div className="flex gap-2 flex-wrap mt-2">
                         {currentAnalysis.progress.conversation.context_awareness.map((context, idx) => (
                           <span key={idx} 
-                                className="text-xs bg-muted/30 text-muted-foreground px-2 py-1 rounded-full">
+                                className="text-xs bg-gray-500 px-2 py-1 rounded-full">
                             {context}
                           </span>
                         ))}
@@ -222,7 +224,7 @@ export default function AgentInterface() {
             {!selectedInstrument && currentAnalysis.progress.next_question && (
               <Card className="border-none bg-card">
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-inter mb-4 text-foreground">
+                  <h2 className="text-lg font-inter mb-4 text-foreground p-2">
                     {currentAnalysis.progress.next_question.text}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -230,12 +232,12 @@ export default function AgentInterface() {
                       <Button
                         key={option.id}
                         onClick={() => handleOptionSelect(option.id, option.text)}
-                        className="w-full p-6 h-auto flex flex-col items-start gap-2 
+                        className="w-full p-8 h-auto flex flex-col items-start gap-2 
                                  bg-card/40 hover:bg-card/60
                                  backdrop-blur-sm transition-all duration-200
                                  border border-border"
                       >
-                        <span className="text-lg font-inter text-foreground">
+                        <span className="text-base font-inter text-foreground p-4 pb-2">
                           {option.text}
                         </span>
                         {option.description && (
