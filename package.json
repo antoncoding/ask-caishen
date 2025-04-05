@@ -19,6 +19,11 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.9.1",
+    "@langchain/anthropic": "^0.3.16",
+    "@langchain/community": "^0.3.39",
+    "@langchain/core": "^0.3.43",
+    "@langchain/langgraph": "^0.2.63",
+    "@langchain/openai": "^0.5.4",
     "@nextui-org/accordion": "^2.0.35",
     "@nextui-org/button": "^2.0.34",
     "@nextui-org/checkbox": "^2.1.2",

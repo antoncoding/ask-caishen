@@ -52,18 +52,21 @@ export const PortfolioPage = () => {
     chartData,
     isLoading: portfolioLoading,
     isError: portfolioError,
-    error: portfolioErrorData
+    error: portfolioErrorData,
+    portfolioSummary
   } = usePortfolioData(address, timerange);
 
   const isLoading = positionsLoading || portfolioLoading;
   const hasError = positionsError || portfolioError;
 
-  const handleAiAnalysis = () => {
-    router.push('/portfolio/ai-analysis');
-  };
 
   const handleTimeRangeChange = (newTimeRange: TimeRange) => {
     setTimerange(newTimeRange);
+  };
+
+  const handleGetAdvice = () => {
+    localStorage.setItem('portfolioContext', portfolioSummary);
+    router.push('/agent-interface');
   };
 
   // Add logging to debug the data
@@ -234,9 +237,9 @@ export const PortfolioPage = () => {
             <Button 
               variant="cta" 
               className="w-full sm:w-auto font-inter"
-              onClick={handleAiAnalysis}
+              onClick={handleGetAdvice}
             >
-              Get Investment Advice
+              Get Eve Advice
             </Button>
           </div>
         </div>

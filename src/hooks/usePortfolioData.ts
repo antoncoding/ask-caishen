@@ -253,6 +253,8 @@ Active for ${position.holding_time_days} days\n`;
     return sections.join('\n');
   }, [positions]);
 
+  console.log('portfolioSummary', portfolioSummary)
+
   const isLoading = 
     mainnetValueLoading || baseValueLoading ||
     mainnetPnlLoading || basePnlLoading ||
