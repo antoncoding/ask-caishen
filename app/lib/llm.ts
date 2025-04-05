@@ -10,13 +10,13 @@ export const llm = new ChatAnthropic({
   temperature: 0.1, // Low temperature for more consistent outputs
 });
 
-// Define our output schemas using Zod
+// Define our output schemas using Zod with more flexible string validation
 export const IntentSchema = z.object({
   intent: z.object({
     type: z.string(),
     details: z.record(z.any())
   }),
-  confidence: z.number()
+  confidence: z.number().min(0).max(1)
 });
 
 export const ActionSchema = z.object({
@@ -24,7 +24,7 @@ export const ActionSchema = z.object({
     type: z.string(),
     parameters: z.record(z.any())
   }),
-  confidence: z.number()
+  confidence: z.number().min(0).max(1)
 });
 
 export const QuestionSchema = z.object({

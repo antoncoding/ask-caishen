@@ -1,6 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
-import { InstrumentType, TimePreference, RiskAppetite } from './user-profile-analysis';
+import { InstrumentType, TimePreference } from './user-profile-analysis';
 import { INSTRUMENT_DEFINITIONS, InstrumentKey } from './instrument-definitions';
 
 // Helper function to generate instrument summaries for the LLM
@@ -50,23 +50,38 @@ When suggesting instruments, consider:
 5. Portfolio diversification needs`;
 }
 
+// Define string literal types instead of enums for more flexible parsing
+const RiskAppetiteValues = ['CONSERVATIVE', 'MODERATE', 'AGGRESSIVE', 'UNKNOWN'] as const;
+const MarketViewValues = ['BULLISH', 'BEARISH', 'NEUTRAL', 'UNKNOWN'] as const;
+const YieldCurveViewValues = ['STEEPENING', 'FLATTENING', 'NEUTRAL', 'UNKNOWN'] as const;
+const VolatilityViewValues = ['HIGH', 'LOW', 'NEUTRAL', 'UNKNOWN'] as const;
+
 export const IntentSchema = z.object({
-  primary_goal: z.enum([
-    'YIELD_OPTIMIZATION',      // Improve yields while maintaining risk
-    'RISK_REDUCTION',         // Reduce overall portfolio risk
-  ]),
+  primary_goal: z.enum(['YIELD_OPTIMIZATION', 'RISK_REDUCTION']),
   constraints: z.object({
     time_preference: TimePreference,
-    risk_appetite: RiskAppetite,
+    risk_appetite: z.string().refine(
+      (val) => RiskAppetiteValues.includes(val as any),
+      (val) => ({ message: `Invalid risk appetite: ${val}. Expected one of: ${RiskAppetiteValues.join(', ')}` })
+    ),
     minimum_position_size: z.number(),
     maximum_position_size: z.number().optional(),
     preferred_instruments: z.array(InstrumentType),
     excluded_instruments: z.array(InstrumentType).optional()
   }),
   context: z.object({
-    market_view: z.enum(['BULLISH', 'BEARISH', 'NEUTRAL']).optional(),
-    yield_curve_view: z.enum(['STEEPENING', 'FLATTENING', 'NEUTRAL']).optional(),
-    volatility_view: z.enum(['HIGH', 'LOW', 'NEUTRAL']).optional()
+    market_view: z.string().refine(
+      (val) => MarketViewValues.includes(val as any),
+      (val) => ({ message: `Invalid market view: ${val}. Expected one of: ${MarketViewValues.join(', ')}` })
+    ).optional(),
+    yield_curve_view: z.string().refine(
+      (val) => YieldCurveViewValues.includes(val as any),
+      (val) => ({ message: `Invalid yield curve view: ${val}. Expected one of: ${YieldCurveViewValues.join(', ')}` })
+    ).optional(),
+    volatility_view: z.string().refine(
+      (val) => VolatilityViewValues.includes(val as any),
+      (val) => ({ message: `Invalid volatility view: ${val}. Expected one of: ${VolatilityViewValues.join(', ')}` })
+    ).optional()
   })
 });
 
