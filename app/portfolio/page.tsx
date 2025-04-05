@@ -6,26 +6,16 @@ import { useRouter } from 'next/navigation';
 import { SquareLoader } from 'react-spinners';
 import AccountConnect from '@/components/layout/header/AccountConnect';
 import { Button } from '@/components/common/Button';
-import { useUserBalances } from '@/hooks/useUserBalances';
 import { usePortfolioData } from '@/hooks/usePortfolioData';
+import { usePortfolioDetails } from '@/hooks/usePortfolioDetails';
 import PortfolioChart from '@/components/portfolio/PortfolioChart';
 import { MotionWrapper, MotionList, MotionListItem } from '@/components/animations/MotionWrapper';
-import { findToken } from '@/utils/tokens';
 import Image from 'next/image';
-import { Chain, formatUnits } from 'viem';
 
 enum TimeRange {
   Day = '1day',
   Week = '1week',
   Month = '1month'
-}
-
-interface TokenBalance {
-  address: string;
-  chainId: string | number;
-  symbol: string;
-  balance: string;
-  value?: number;
 }
 
 interface TimeRangeOption {
@@ -39,27 +29,9 @@ const timeRangeOptions: TimeRangeOption[] = [
   { value: TimeRange.Month, label: '30D' },
 ];
 
-
-// Add a helper function to format the balance
-const formatTokenBalance = (balance: string, decimals: number) => {
-  try {
-    const formatted = formatUnits(BigInt(balance), decimals);
-    // Format with appropriate decimal places based on the value
-    const value = parseFloat(formatted);
-    if (value < 0.0001) {
-      return '< 0.0001';
-    }
-    if (value < 1) {
-      return value.toFixed(4);
-    }
-    if (value < 1000) {
-      return value.toFixed(2);
-    }
-    return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
-  } catch (error) {
-    console.error('Error formatting balance:', error);
-    return '0';
-  }
+const chainNames: Record<number, string> = {
+  1: 'Ethereum',
+  8453: 'Base'
 };
 
 export const PortfolioPage = () => {
@@ -68,11 +40,11 @@ export const PortfolioPage = () => {
   const [timerange, setTimerange] = React.useState<TimeRange>(TimeRange.Week);
 
   const { 
-    data: balanceData, 
-    isLoading: balancesLoading,
-    isError: balancesError,
-    error: balancesErrorData
-  } = useUserBalances(address);
+    positions,
+    isLoading: positionsLoading,
+    isError: positionsError,
+    error: positionsErrorData
+  } = usePortfolioDetails(address);
 
   const {
     totalValue,
@@ -81,12 +53,10 @@ export const PortfolioPage = () => {
     isLoading: portfolioLoading,
     isError: portfolioError,
     error: portfolioErrorData
-  } = usePortfolioData(address, '1', timerange);
+  } = usePortfolioData(address, timerange);
 
-  console.log('totalValue', totalValue)
-
-  const isLoading = balancesLoading || portfolioLoading;
-  const hasError = balancesError || portfolioError;
+  const isLoading = positionsLoading || portfolioLoading;
+  const hasError = positionsError || portfolioError;
 
   const handleAiAnalysis = () => {
     router.push('/portfolio/ai-analysis');
@@ -99,11 +69,12 @@ export const PortfolioPage = () => {
   // Add logging to debug the data
   React.useEffect(() => {
     console.log('Portfolio Data:', {
+      positions,
       totalValue,
       chartData: chartData?.length ? chartData[chartData.length - 1] : null,
       profitLoss
     });
-  }, [totalValue, chartData, profitLoss]);
+  }, [positions, totalValue, chartData, profitLoss]);
 
   if (!isConnected) {
     return (
@@ -124,7 +95,7 @@ export const PortfolioPage = () => {
       <MotionWrapper className="flex h-[80vh] flex-col items-center justify-center text-center">
         <h1 className="mb-6 text-3xl text-primary font-inter">Analyzing Your Portfolio</h1>
         <p className="mb-6 text-xl text-secondary font-inter">
-          Fetching your on-chain balances...
+          Fetching your DeFi positions...
         </p>
         <SquareLoader 
           color="#8fa6cb"
@@ -152,18 +123,12 @@ export const PortfolioPage = () => {
     );
   }
 
-  // Filter recognized tokens and ensure they have token info
-  const recognizedTokens = balanceData?.tokens.filter(token => {
-    const tokenInfo = findToken(token.address, 1); // Using mainnet chainId
-    return tokenInfo?.img !== undefined; // Only include tokens with defined images
-  }) || [];
-
-  if (!recognizedTokens.length) {
+  if (!positions.length) {
     return (
       <MotionWrapper className="flex h-[80vh] flex-col items-center justify-center text-center">
-        <h1 className="mb-6 text-3xl text-primary font-inter">No Recognized Assets Found</h1>
+        <h1 className="mb-6 text-3xl text-primary font-inter">No DeFi Positions Found</h1>
         <p className="mb-10 max-w-md text-center text-secondary font-inter">
-          We couldn't find any recognized tokens in your wallet. Make sure you have some supported assets to view portfolio details.
+          We couldn't find any active DeFi positions in your wallet. Try investing in some DeFi protocols to view portfolio details.
         </p>
       </MotionWrapper>
     );
@@ -207,34 +172,54 @@ export const PortfolioPage = () => {
               ({profitLoss.percentage.toFixed(2)}%) past {timerange === TimeRange.Day ? 'day' : timerange === TimeRange.Week ? 'week' : 'month'}
             </p>
 
-            <MotionList className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {recognizedTokens.map((token) => {
-                // Since we filtered for tokens with images, this will always exist
-                const tokenInfo = findToken(token.address, 1)!;
-                const formattedBalance = formatTokenBalance(token.balance, tokenInfo.decimals);
-                
-                return (
-                  <MotionListItem 
-                    key={token.address} 
-                    className="rounded-md bg-main p-4 text-center flex flex-col items-center"
-                  >
-                    <div className="mb-2">
+            <MotionList className="mt-4 grid gap-4">
+              {positions.map((position) => (
+                <MotionListItem 
+                  key={`${position.chain_id}-${position.contract_address}-${position.protocol}`} 
+                  className="rounded-md bg-main p-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
                       <Image 
-                        src={tokenInfo.img!} // We can safely assert non-null here due to our filter
-                        alt={token.symbol || 'Token Icon'} 
-                        width={32} 
+                        src={position.protocol_icon}
+                        alt={position.protocol_name}
+                        width={32}
                         height={32}
                         className="rounded-full"
                       />
+                      <div>
+                        <h3 className="text-primary font-inter font-medium">{position.protocol_name}</h3>
+                        <p className="text-sm text-secondary font-inter">{position.name}</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-secondary font-inter">{token.symbol}</p>
-                    <p className="text-lg text-primary font-inter">{formattedBalance}</p>
-                    <p className="text-sm text-secondary font-inter">
-                      ${token.value?.toLocaleString() ?? '0'}
-                    </p>
-                  </MotionListItem>
-                );
-              })}
+                    <div className="text-right">
+                      <p className="text-primary font-inter">${position.value_usd.toLocaleString()}</p>
+                      {position.profit_abs_usd !== null && (
+                        <p className={`text-sm font-inter ${position.profit_abs_usd >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          {position.profit_abs_usd >= 0 ? '+' : ''}{position.profit_abs_usd.toLocaleString()}
+                          {position.roi !== null && ` (${(position.roi * 100).toFixed(2)}%)`}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-2 flex justify-between text-sm text-secondary font-inter">
+                    <div>
+                      <span className="mr-2">Chain:</span>
+                      <span className="text-primary">{chainNames[position.chain_id] || `Chain ${position.chain_id}`}</span>
+                    </div>
+                    {position.weighted_apr !== null && (
+                      <div>
+                        <span className="mr-2">APR:</span>
+                        <span className="text-primary">{(position.weighted_apr * 100).toFixed(2)}%</span>
+                      </div>
+                    )}
+                    <div>
+                      <span className="mr-2">Time:</span>
+                      <span className="text-primary">{position.holding_time_days} days</span>
+                    </div>
+                  </div>
+                </MotionListItem>
+              ))}
             </MotionList>
           </div>
 

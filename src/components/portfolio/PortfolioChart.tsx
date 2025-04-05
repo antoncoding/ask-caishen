@@ -95,19 +95,21 @@ export default function PortfolioChart({ data, timerange }: PortfolioChartProps)
 
   return (
     <div className="w-full rounded-lg bg-surface p-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-start mb-4 h-[60px]">
         <h3 className="text-xl text-primary font-inter">Historical Value</h3>
-        <div className="text-right">
-          <p className="text-2xl text-primary font-inter">
+        <div className="text-right min-w-[200px]">
+          <p className="text-2xl text-primary font-inter h-[32px]">
             {formatCurrency(hoveredValue ?? endValue)}
           </p>
-          {!hoveredValue && (
-            <p className={`text-sm ${isPositiveTrend ? 'text-green-500' : 'text-red-500'}`}>
-              {isPositiveTrend ? '▲' : '▼'} 
-              {formatCurrency(Math.abs(endValue - startValue))} 
-              ({((endValue - startValue) / startValue * 100).toFixed(2)}%)
-            </p>
-          )}
+          <div className="h-[24px]">
+            {!hoveredValue && (
+              <p className={`text-sm ${isPositiveTrend ? 'text-green-500' : 'text-red-500'}`}>
+                {isPositiveTrend ? '▲' : '▼'} 
+                {formatCurrency(Math.abs(endValue - startValue))} 
+                ({((endValue - startValue) / startValue * 100).toFixed(2)}%)
+              </p>
+            )}
+          </div>
         </div>
       </div>
       
