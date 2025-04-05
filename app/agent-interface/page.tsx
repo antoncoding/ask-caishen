@@ -550,11 +550,10 @@ export default function AgentInterface() {
 
         {/* Loading Overlay */}
         {isLoading && (
-          <div className="fixed inset-0 bg-background/80 dark:bg-gray-900/90 backdrop-blur-sm 
-                        flex items-center justify-center z-50">
-            <Card className="border-none bg-background/50 dark:bg-gray-800/50">
-              <CardContent className="p-8 flex flex-col items-center space-y-4">
-                <div className="relative w-32 h-32">
+          <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
+            <Card className="border-none bg-background/95 dark:bg-gray-800/95 shadow-xl pointer-events-auto">
+              <CardContent className="p-6 flex flex-col items-center space-y-4">
+                <div className="relative w-24 h-24">
                   <Image
                     src="/images/thinking.png"
                     alt="Caishen is thinking"
@@ -563,9 +562,9 @@ export default function AgentInterface() {
                     priority
                   />
                 </div>
-                <h3 className="text-lg font-inter text-foreground dark:text-gray-200">
+                <p className="text-base font-inter text-foreground dark:text-gray-200">
                   Caishen is thinking...
-                </h3>
+                </p>
               </CardContent>
             </Card>
           </div>
