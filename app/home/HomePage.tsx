@@ -11,8 +11,8 @@ export default function HomePage() {
     <div className="bg-main flex min-h-screen flex-col items-center justify-center">
       <MotionWrapper className="w-full max-w-4xl px-4 text-center">
         <section className="flex w-full flex-col items-center justify-center">
-          <div className="w-full sm:w-4/5 md:w-3/5 mx-auto">
-            <div className="relative w-32 h-32 mx-auto mb-6">
+          <div className="w-full sm:w-4/5 md:w-4/5 mx-auto">
+            <div className="relative w-40 h-40 mx-auto mb-6">
               <Image
                 src="/images/logo.png"
                 alt="Caishen Logo"
