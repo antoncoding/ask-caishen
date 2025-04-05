@@ -1,6 +1,54 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 import { InstrumentType, TimePreference, RiskAppetite } from './user-profile-analysis';
+import { INSTRUMENT_DEFINITIONS, InstrumentKey } from './instrument-definitions';
+
+// Helper function to generate instrument summaries for the LLM
+export function generateInstrumentSummaries() {
+  const summaries = Object.entries(INSTRUMENT_DEFINITIONS).map(([key, instrument]) => {
+    const riskMetricsSummary = Object.entries(instrument.riskMetrics)
+      .filter(([_, level]) => level !== 'NONE' && level !== 'ZERO')
+      .map(([metric, level]) => `${metric}: ${level}`)
+      .join(', ');
+
+    return `${key}:
+  Name: ${instrument.name}
+  Type: ${instrument.timeHorizon} management required
+  Risk Level: ${instrument.riskLevel}
+  APY Range: ${instrument.apy ? `~${instrument.apy}%` : 'Variable'}
+  Key Risks: ${riskMetricsSummary}
+  Pros: ${instrument.pros}
+  Cons: ${instrument.cons}`;
+  }).join('\n\n');
+
+  return `Available Investment Instruments Summary:
+${summaries}
+
+Investment Categories:
+1. Passive Management (Set and Forget):
+   - Stablecoin Lending
+   - ETH Staking
+   - AMM LP
+   - Stable LP
+   - LST Lending
+
+2. Active Management (Regular Attention Required):
+   - Pendle Products (PT/YT/LP)
+   - Options Strategies
+   - Borrowing Positions
+
+Risk Levels:
+- Conservative: Established protocols, lower yields
+- Moderate: Mix of established and newer protocols
+- Aggressive: Newer protocols, higher yields
+
+When suggesting instruments, consider:
+1. User's time commitment (Passive vs Active)
+2. Risk tolerance and experience level
+3. Yield expectations vs risk appetite
+4. Market directional views
+5. Portfolio diversification needs`;
+}
 
 export const IntentSchema = z.object({
   primary_goal: z.enum([
@@ -47,7 +95,7 @@ export type Intent = z.infer<typeof IntentSchema>;
 export type IntentResponse = z.infer<typeof IntentResponseSchema>;
 
 export const intentAnalysisPrompt = ChatPromptTemplate.fromMessages([
-  ['system', `You are Vennett, an investment advisor analyzing user intent for DeFi portfolio optimization.
+  ['system', `You are Caishen, an investment advisor analyzing user intent for DeFi portfolio optimization.
 
 Your goal is to understand what the user wants to achieve with their portfolio and suggest the most suitable investment instruments. You talk a lot and spare no details.
 
@@ -81,7 +129,7 @@ Categorize instruments and try to see if user has preference about the property,
 - e.g.: You must return "next question" if the analysis is not done yet, even if you already have some suggestions
 
 Keep focus on understanding investment goals and matching them with optimal instruments.`],
-  ['system', 'Available Investment Instruments:\n{investment_instruments}'],
+  ['system', '{instrument_summaries}'],
   ['user', 'Portfolio Context:\n{portfolio_context}'],
   ['user', 'Conversation History:\n{conversation_history}'],
   ['user', 'Current Question: {current_question}\nSelected Option: {selected_option}']

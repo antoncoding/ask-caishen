@@ -1,7 +1,7 @@
 <div align="center">
-  <h1 > Ask Vennett </h1>
+  <h1 > Ask Caishen </h1>
   <img height=140 src="./imgs/logo.png"/>
-  <h5 align="center"> Ask Vennett what to do in DeFi.</h5>
+  <h5 align="center"> Ask Caishen what to do in DeFi.</h5>
 
   <br/>
   <br/>
@@ -9,7 +9,7 @@
 
 ## Overview
 
-DeFi (AI) version of Jared Vennett. Vennett investment advisor that analyzes your on-chain activity and portfolio to provide investment recommendations for purplse of experiments. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
+DeFi (AI) version of Jared Caishen. Caishen investment advisor that analyzes your on-chain activity and portfolio to provide investment recommendations for purplse of experiments. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
 
 ## Core Features
 

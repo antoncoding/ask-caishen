@@ -2,8 +2,8 @@ import { generateMetadata } from '@/utils/generateMetadata';
 import HomePage from './home/HomePage';
 
 export const metadata = generateMetadata({
-  title: 'Vennett',
-  description: 'Ask Vennett',
+  title: 'Caishen',
+  description: 'Ask Caishen',
   images: 'themes.png',
   pathname: '',
 });

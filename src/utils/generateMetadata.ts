@@ -27,12 +27,12 @@ export function generateMetadata({
     title,
     description,
     metadataBase: new URL(baseUrl),
-    authors: [{ name: 'Ask Vennett' }],
+    authors: [{ name: 'Ask Caishen' }],
     openGraph: {
       title,
       description,
       url,
-      siteName: 'Ask Vennett',
+      siteName: 'Ask Caishen',
       images: [
         {
           url: imageUrl,

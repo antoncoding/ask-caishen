@@ -5,6 +5,7 @@ import {
   type AnalysisResponse,
   AnalysisResponseSchema,
 } from '../prompts/user-profile-analysis';
+import { generateInstrumentSummaries } from '../prompts/intent-analysis';
 import { z } from 'zod';
 
 // Initialize the LLM
@@ -17,11 +18,21 @@ const llm = new ChatAnthropic({
 // Create the analyze profile tool
 const analyzeProfileTool = tool(
   async ({ portfolio_context, conversation_history, current_question, selected_option }): Promise<string> => {
-    // Return a simple string that the agent can use to build its response
-    return `Based on the portfolio context: ${portfolio_context}\n` +
-           `And conversation history: ${conversation_history}\n` +
-           `Current question was: ${current_question}\n` +
-           `User selected: ${selected_option}`;
+    // Get instrument summaries for context
+    const instrumentSummaries = generateInstrumentSummaries();
+    
+    // Return a detailed context string that the agent can use
+    return `Investment Context:
+${instrumentSummaries}
+
+Portfolio Context:
+${portfolio_context}
+
+Conversation History:
+${conversation_history}
+
+Current Question: ${current_question}
+User Selected: ${selected_option}`;
   },
   {
     name: "analyze_portfolio",
@@ -68,11 +79,19 @@ You must follow this exact conversation sequence:
    - "5-10% (Balanced)"
    - "10%+ (Growth focused)"
 
+When suggesting instruments:
+- Use the provided instrument summaries to match user preferences
+- Consider both passive and active management requirements
+- Match risk levels with user's risk appetite
+- Consider APY ranges and user's yield expectations
+- Factor in the pros and cons of each instrument
+- Explain key risks and how they align with user's profile
+
 Only after collecting ALL this information:
 - Analyze their preferences
-- Match with suitable instruments
-- Provide detailed recommendations
-- Include specific risk metrics
+- Match with suitable instruments using the detailed summaries
+- Provide detailed recommendations with clear reasoning
+- Include specific risk metrics and management requirements
 
 The response must follow the exact schema structure with all required fields.
 Do not skip questions or provide final recommendations until all questions are answered.`,

@@ -40,7 +40,7 @@ export function createWagmiConfig(projectId: string) {
       },
     ],
     {
-      appName: 'Ask Vennett',
+      appName: 'Ask Caishen',
       projectId,
     },
   );
