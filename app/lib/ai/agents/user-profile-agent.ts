@@ -85,7 +85,8 @@ export async function analyzeUserProfile(
   messages: Array<{ role: string; content: string }>,
   portfolioContext: string,
   currentQuestion?: string,
-  selectedOption?: string
+  selectedOption?: string,
+  customInput?: string
 ): Promise<AnalysisResponse> {
   try {
     const conversationHistory = messages
@@ -106,11 +107,13 @@ Portfolio Context: ${portfolioContext}
 Conversation History: ${conversationHistory}
 
 Current Question: ${currentQuestion || ''}
-Selected Option: ${selectedOption || ''}
+Selected Option: ${selectedOption || ''} ${customInput ? `Custom Input: ${customInput}` : ''}
 
 Current Progress: ${currentProgress} out of 4 questions
 Questions Remaining: ${Math.max(0, 4 - currentProgress)}
-Next Topic: ${questionSequence[currentProgress] || 'final_recommendations'}`
+Next Topic: ${questionSequence[currentProgress] || 'final_recommendations'}
+
+Note: The user's response ${selectedOption?.startsWith('In response to') ? 'was a custom detailed input' : 'was a predefined option'}. Please analyze accordingly.`
         }
       ]
     });

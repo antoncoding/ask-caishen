@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { SquareLoader } from 'react-spinners';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import { useStoredPortfolioSummary } from '../../src/hooks/useStoredPortfolioSummary';
 import type { AnalysisResponse, InstrumentType } from '../lib/ai/prompts/user-profile-analysis';
 import { Progress } from '@nextui-org/react';
@@ -12,7 +13,8 @@ import {
   TrendingUp, Shield, Wallet, LineChart, Clock, 
   BarChart3, ArrowUpRight, Lock, Unlock, Scale,
   AlertCircle, CheckCircle2,
-  BrainIcon
+  BrainIcon,
+  SendHorizontal, X
 } from 'lucide-react';
 
 interface Message {
@@ -47,6 +49,8 @@ export default function AgentInterface() {
   const [currentAnalysis, setCurrentAnalysis] = useState<AnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedInstrument, setSelectedInstrument] = useState<string | null>(null);
+  const [customInput, setCustomInput] = useState<string>('');
+  const [isCustomInputMode, setIsCustomInputMode] = useState(false);
 
   // Start with initial question when portfolio is loaded
   useEffect(() => {
@@ -124,7 +128,8 @@ export default function AgentInterface() {
           messages: newMessages,
           portfolioContext: typeof portfolioSummary === 'string' ? portfolioSummary : JSON.stringify(portfolioSummary),
           currentQuestion: currentAnalysis?.progress.next_question?.text || INITIAL_QUESTION.text,
-          selectedOptionId: optionId
+          selectedOptionId: optionId,
+          customInput: optionId === 'CUSTOM_INPUT' ? optionText : undefined
         })
       });
 
@@ -148,6 +153,18 @@ export default function AgentInterface() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCustomSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!customInput.trim()) return;
+    
+    const currentQuestion = currentAnalysis?.progress.next_question?.text || '';
+    const formattedResponse = `In response to "${currentQuestion}": ${customInput}`;
+    
+    await handleOptionSelect('CUSTOM_INPUT', formattedResponse);
+    setCustomInput('');
+    setIsCustomInputMode(false);
   };
 
   const getInstrumentIcon = (type: string) => {
@@ -223,7 +240,7 @@ export default function AgentInterface() {
             {/* Current Question - Only show if no instrument is selected */}
             {!selectedInstrument && currentAnalysis.progress.next_question && (
               <Card className="border-none bg-background/50 dark:bg-gray-800/50">
-                <CardContent className="p-6">
+                <CardContent className="p-2">
                   <h2 className="text-lg font-inter mb-4 text-foreground dark:text-gray-100 p-2">
                     {currentAnalysis.progress.next_question.text}
                   </h2>
@@ -237,16 +254,75 @@ export default function AgentInterface() {
                                  backdrop-blur-sm transition-all duration-200
                                  border border-border/30 dark:border-gray-700/50"
                       >
-                        <span className="text-base font-inter text-foreground dark:text-gray-200 p-4 pb-2">
+                        <span className="text-base font-inter text-foreground dark:text-gray-200 py-2">
                           {option.text}
                         </span>
                         {option.description && (
-                          <span className="text-sm text-muted-foreground dark:text-gray-400 font-inter">
+                          <span className="text-sm text-muted-foreground text-gray-500 dark:text-gray-400 font-inter">
                             {option.description}
                           </span>
                         )}
                       </Button>
                     ))}
+                    
+                    {/* Custom Input Option - Only show after initial question */}
+                    {currentAnalysis.progress.completed_topics.length > 0 && (
+                      <>
+                        {isCustomInputMode ? (
+                          <div className="w-full p-4 bg-background/50 dark:bg-gray-800/50 backdrop-blur-sm 
+                                        border border-border/30 dark:border-gray-700/50 rounded-lg">
+                            <form onSubmit={handleCustomSubmit} className="flex flex-col gap-3">
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  value={customInput}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomInput(e.target.value)}
+                                  placeholder="Type your custom response..."
+                                  className="flex-1"
+                                />
+                                <Button 
+                                  type="submit"
+                                  size="icon"
+                                  disabled={!customInput.trim()}
+                                  className="shrink-0"
+                                >
+                                  <SendHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Send message</span>
+                                </Button>
+                                <Button 
+                                  onClick={() => {
+                                    setIsCustomInputMode(false);
+                                    setCustomInput('');
+                                  }}
+                                  size="icon"
+                                  type="button"
+                                  className="shrink-0"
+                                  variant="ghost"
+                                >
+                                  <X className="h-4 w-4" />
+                                  <span className="sr-only">Cancel</span>
+                                </Button>
+                              </div>
+                            </form>
+                          </div>
+                        ) : (
+                          <Button
+                            onClick={() => setIsCustomInputMode(true)}
+                            className="w-full p-8 h-auto flex flex-col items-start gap-2 
+                                     bg-background/50 dark:bg-gray-800/50 hover:bg-background/70 dark:hover:bg-gray-700/50
+                                     backdrop-blur-sm transition-all duration-200
+                                     border border-border/30 dark:border-gray-700/50"
+                            variant="ghost"
+                          >
+                            <span className="text-base font-inter text-foreground dark:text-gray-200 p-4 pb-2">
+                              Custom Response
+                            </span>
+                            <span className="text-sm text-muted-foreground text-gray-500 dark:text-gray-400 font-inter">
+                              Type your own detailed response
+                            </span>
+                          </Button>
+                        )}
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -348,7 +424,7 @@ export default function AgentInterface() {
                     <Shield className="w-5 h-5 text-warning dark:text-warning/80" />
                     Risk Analysis
                   </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {Object.entries(currentAnalysis.portfolio.risk_metrics).map(([key, value]) => (
                       <div key={key} 
                            className="bg-background/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 

@@ -39,21 +39,6 @@ export function IconNavLink({
   );
 }
 
-export function NavbarTitle() {
-  return (
-    <div className="flex h-8 items-center justify-center gap-2">
-      <img src="/logo.png" alt="Vennett" className="h-6 w-6" />
-      <Link
-        href="/"
-        passHref
-        className="text-center font-zen text-lg font-medium text-primary no-underline"
-        aria-label="Vennett homepage"
-      >
-        Vennett
-      </Link>
-    </div>
-  );
-}
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -70,7 +55,7 @@ export function Navbar() {
   return (
     <div className="fixed left-0 top-0 bottom-0 w-16 flex flex-col items-center justify-between py-6 bg-main">
       {/* Top - Logo */}
-      <NavbarTitle />
+      <div />
       
       {/* Middle - Navigation */}
       <div className="flex flex-col items-center">

@@ -7,13 +7,14 @@ export async function POST(req: NextRequest) {
     console.log('\n=== Profile Analysis API Called ===');
     
     const body = await req.json();
-    const { messages, portfolioContext, currentQuestion, selectedOptionId } = body;
+    const { messages, portfolioContext, currentQuestion, selectedOptionId, customInput } = body;
 
     console.log('Request Body:', {
       messagesCount: messages?.length || 0,
       hasPortfolioContext: !!portfolioContext,
       currentQuestion,
-      selectedOptionId
+      selectedOptionId,
+      hasCustomInput: !!customInput
     });
 
     // Analyze user profile using our specialized agent
@@ -21,15 +22,18 @@ export async function POST(req: NextRequest) {
       messages || [],
       portfolioContext || '',
       currentQuestion,
-      selectedOptionId
+      selectedOptionId,
+      customInput
     );
 
     console.log('\n=== Profile Analysis Response ===');
     console.log('Analysis Complete:', result.progress.is_analysis_complete);
     console.log('Completed Topics:', result.progress.completed_topics);
     console.log('Next Question:', result.progress.next_question?.text);
+    if (customInput) {
+      console.log('Custom Input Processed:', customInput);
+    }
 
-    console.log('Response:', JSON.stringify(result, null, 2));
     return NextResponse.json(result);
 
   } catch (error) {

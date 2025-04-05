@@ -86,8 +86,10 @@ export default function Page() {
         <p className="mb-10 max-w-md text-center text-secondary font-inter">
           Connect your wallet to get personalized investment advice based on your on-chain portfolio.
         </p>
-        <div className="w-48 mx-auto">
-          <AccountConnect />
+        <div className="flex items-center justify-center">
+          <div className="w-[200px] flex justify-center">
+            <AccountConnect />
+          </div>
         </div>
       </MotionWrapper>
     );
@@ -239,7 +241,7 @@ export default function Page() {
               className="w-full sm:w-auto font-inter"
               onClick={handleGetAdvice}
             >
-              Ask Vennett
+              Improve My Portfolio
             </Button>
           </div>
         </div>
