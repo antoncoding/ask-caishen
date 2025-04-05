@@ -1,35 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
+
+const INCH_API_KEY = process.env.ONEINCHE_KEY;
+
+console.log('INCH_API_KEY', INCH_API_KEY);
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const chainId = searchParams.get('chain_id') || '1'; // Default to Ethereum mainnet
-  const timerange = searchParams.get('timerange') || '1week'; // Default to 1 week
-  const useCache = searchParams.get('use_cache') || 'true';
+  const address = searchParams.get('address');
+  const chainId = searchParams.get('chainId') || '1';
+  const timerange = searchParams.get('timerange') || '1week';
+
+  if (!address) {
+    return NextResponse.json(
+      { error: 'Address is required' },
+      { status: 400 }
+    );
+  }
+
+  const url = `https://api.1inch.dev/portfolio/portfolio/v4/general/profit_and_loss?chain_id=${chainId}&timerange=${timerange}&addresses=${address}`;
+  console.log('Calling URL:', url);
 
   try {
-    const url = 'https://api.1inch.dev/portfolio/portfolio/v4/general/profit_and_loss';
-    
-    const config = {
-      headers: {
-        'Authorization': 'Bearer PORsa7U14EGXJklJqyRHtPQ0ZUJ09y3p'
-      },
-      params: {
-        'chain_id': chainId,
-        'timerange': timerange,
-        'use_cache': useCache
+    const response = await fetch(
+      url,
+      {
+        headers: {
+          'Authorization': `Bearer ${INCH_API_KEY}`
+        }
       }
-    };
+    );
 
-    const response = await axios.get(url, config);
-    
-    // Return only the result data
-    return NextResponse.json(response.data.result);
-  } catch (error: any) {
-    console.error('Error fetching profit and loss data:', error.message);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data.result);
+  } catch (error) {
+    console.error('Failed to fetch profit and loss data:', error);
     return NextResponse.json(
       { error: 'Failed to fetch profit and loss data' },
-      { status: error.response?.status || 500 }
+      { status: 500 }
     );
   }
 } 

@@ -41,7 +41,7 @@
     "axios": "^1.8.4",
     "clsx": "^2.1.0",
     "downshift": "^9.0.8",
-    "framer-motion": "^11.2.10",
+    "framer-motion": "^12.6.3",
     "graphql": "14",
     "graphql-request": "6",
     "local-storage-fallback": "^4.1.2",
