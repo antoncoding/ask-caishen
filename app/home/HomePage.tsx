@@ -25,7 +25,7 @@ export default function HomePage() {
               Ask Caishen 
             </h1>
             <p className="mb-10 text-center font-inter text-xl text-secondary">
-              Figure out what to do with your DeFi portfolio
+              Logical suggestion for you next move in DeFi
             </p>
           </div>
           
