@@ -39,8 +39,6 @@ const timeRangeOptions: TimeRangeOption[] = [
   { value: TimeRange.Month, label: '30D' },
 ];
 
-// Default token icon as a simple data URL circle
-const DEFAULT_TOKEN_ICON = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iI2U1ZTdlYiIvPjwvc3ZnPg==';
 
 // Add a helper function to format the balance
 const formatTokenBalance = (balance: string, decimals: number) => {
@@ -68,12 +66,12 @@ export const PortfolioPage = () => {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   const [timerange, setTimerange] = React.useState<TimeRange>(TimeRange.Week);
-  const [isChartLoading, setIsChartLoading] = React.useState(false);
 
   const { 
     data: balanceData, 
     isLoading: balancesLoading,
     isError: balancesError,
+    error: balancesErrorData
   } = useUserBalances(address);
 
   const {
@@ -82,15 +80,12 @@ export const PortfolioPage = () => {
     chartData,
     isLoading: portfolioLoading,
     isError: portfolioError,
+    error: portfolioErrorData
   } = usePortfolioData(address, '1', timerange);
 
-  // Get the current value from the latest chart data point
-  const currentValue = React.useMemo(() => {
-    if (!chartData || chartData.length === 0) return totalValue;
-    return chartData[chartData.length - 1].value_usd;
-  }, [chartData, totalValue]);
+  console.log('totalValue', totalValue)
 
-  const isInitialLoading = balancesLoading || portfolioLoading;
+  const isLoading = balancesLoading || portfolioLoading;
   const hasError = balancesError || portfolioError;
 
   const handleAiAnalysis = () => {
@@ -98,17 +93,17 @@ export const PortfolioPage = () => {
   };
 
   const handleTimeRangeChange = (newTimeRange: TimeRange) => {
-    if (timerange === newTimeRange) return; // Don't reload if same timerange
-    setIsChartLoading(true);
     setTimerange(newTimeRange);
   };
 
-  // Clear chart loading state when new data arrives
+  // Add logging to debug the data
   React.useEffect(() => {
-    if (chartData && chartData.length > 0) {
-      setIsChartLoading(false);
-    }
-  }, [chartData]);
+    console.log('Portfolio Data:', {
+      totalValue,
+      chartData: chartData?.length ? chartData[chartData.length - 1] : null,
+      profitLoss
+    });
+  }, [totalValue, chartData, profitLoss]);
 
   if (!isConnected) {
     return (
@@ -124,7 +119,7 @@ export const PortfolioPage = () => {
     );
   }
 
-  if (isInitialLoading) {
+  if (isLoading) {
     return (
       <MotionWrapper className="flex h-[80vh] flex-col items-center justify-center text-center">
         <h1 className="mb-6 text-3xl text-primary font-inter">Analyzing Your Portfolio</h1>
@@ -177,6 +172,8 @@ export const PortfolioPage = () => {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <MotionWrapper>
+        <h1 className="mb-6 text-center text-4xl text-primary font-inter">Your DeFi Portfolio</h1>
+        
         <div className="mb-8">
           <div className="mb-6 rounded-lg bg-surface p-6">
             <div className="flex justify-between items-start mb-6">
@@ -200,22 +197,19 @@ export const PortfolioPage = () => {
               </div>
             </div>
 
-            <div className="mb-6">
-              <p className="text-center text-3xl text-primary font-inter">
-                ${currentValue?.toLocaleString() ?? '0'}
-              </p>
-              
-              {profitLoss && (
-                <p className={`text-center font-inter ${profitLoss.absValue >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {profitLoss.absValue >= 0 ? '▲' : '▼'} 
-                  ${Math.abs(profitLoss.absValue).toFixed(2)} 
-                  ({profitLoss.percentage.toFixed(2)}%) past {timerange === TimeRange.Day ? '24h' : timerange === TimeRange.Week ? '7d' : '30d'}
-                </p>
-              )}
-            </div>
+            <p className="mb-2 text-center text-3xl text-primary font-inter">
+              ${totalValue?.toLocaleString() ?? '0'}
+            </p>
             
+            <p className={`mb-6 text-center font-inter ${profitLoss.absValue >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {profitLoss.absValue >= 0 ? '▲' : '▼'} 
+              ${Math.abs(profitLoss.absValue).toFixed(2)} 
+              ({profitLoss.percentage.toFixed(2)}%) past {timerange === TimeRange.Day ? 'day' : timerange === TimeRange.Week ? 'week' : 'month'}
+            </p>
+
             <MotionList className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {recognizedTokens.map((token) => {
+                // Since we filtered for tokens with images, this will always exist
                 const tokenInfo = findToken(token.address, 1)!;
                 const formattedBalance = formatTokenBalance(token.balance, tokenInfo.decimals);
                 
@@ -226,8 +220,8 @@ export const PortfolioPage = () => {
                   >
                     <div className="mb-2">
                       <Image 
-                        src={tokenInfo.img!}
-                        alt={token.symbol} 
+                        src={tokenInfo.img!} // We can safely assert non-null here due to our filter
+                        alt={token.symbol || 'Token Icon'} 
                         width={32} 
                         height={32}
                         className="rounded-full"
@@ -244,12 +238,7 @@ export const PortfolioPage = () => {
             </MotionList>
           </div>
 
-          <div className="mb-6 relative">
-            {isChartLoading && (
-              <div className="absolute inset-0 bg-surface bg-opacity-50 flex items-center justify-center z-10">
-                <SquareLoader color="#8fa6cb" size={30} />
-              </div>
-            )}
+          <div className="mb-6">
             <PortfolioChart 
               data={chartData}
               timerange={timerange}

@@ -52,6 +52,8 @@ export function usePortfolioData(
     refetchInterval: 60000, // Refetch every minute
   });
 
+  console.log('valueData', valueData)
+
   // Fetch profit/loss data
   const { 
     data: pnlData,
@@ -107,7 +109,7 @@ export function usePortfolioData(
   const error = valueErrorData ?? pnlErrorData ?? chartErrorData ?? null;
 
   return {
-    totalValue: valueData?.value_usd ?? 0,
+    totalValue: valueData?.[0]?.value_usd ?? 0,
     profitLoss: processedPnL,
     chartData: chartData?.chart_data ?? [],
     isLoading,
