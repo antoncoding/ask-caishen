@@ -177,7 +177,7 @@ export default function AgentInterface() {
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-background to-background/80 dark:from-gray-900 dark:to-gray-900/90">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-inter text-foreground dark:text-gray-100 mb-8">Talk to Vennett</h1>
+        <h1 className="text-3xl font-inter text-foreground dark:text-gray-100 mb-8">Ask Vennett</h1>
         
         {/* Error Display */}
         {error && (

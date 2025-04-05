@@ -9,7 +9,7 @@
 
 ## Overview
 
-Vennett is the DeFi version of Vennett Burry, an AI investment advisor that analyzes your on-chain activity and portfolio to provide investment recommendations for purplse of experiments. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
+DeFi (AI) version of Jared Vennett. Vennett investment advisor that analyzes your on-chain activity and portfolio to provide investment recommendations for purplse of experiments. The platform features dynamic UI generation where the AI determines which components to display based on your risk appetite and builds transactions accordingly.
 
 ## Core Features
 
